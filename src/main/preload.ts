@@ -22,6 +22,8 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },
+  retrieveUserData: ()=> ipcRenderer.invoke("retrieve-user-data"),
+  writeUserData: (userData:{[key:string]:string}) => ipcRenderer.send("write-user-data",userData)
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

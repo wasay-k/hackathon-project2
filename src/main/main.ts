@@ -9,7 +9,8 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import fs from "fs";
+import { app, BrowserWindow, shell, ipcMain, safeStorage } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -30,6 +31,30 @@ ipcMain.on('ipc-example', async (event, arg) => {
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
+const handleUserDataRetrieval = async ()=>{
+  try {
+    const filePath = path.join(app.getPath("userData"),"login_info.json");
+    const data = fs.readFileSync(filePath,{encoding: "utf8"});
+    return data;
+  } catch (error) {
+    return null;
+  }
+  
+}
+
+const writeUserData =async (userData:any) => {
+  try {
+    const filePath = path.join(app.getPath("userData"),"login_info.json");
+    const email = safeStorage.encryptString(userData["email"]);
+    const password = safeStorage.encryptString(userData["password"]);
+    const name = userData["name"];
+    fs.writeFileSync(filePath,JSON.stringify({name,email: email,password: password}));
+
+  } catch (error) {
+    console.error(error);
+    
+  }
+}
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -127,6 +152,8 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    ipcMain.handle("retrieve-user-data",handleUserDataRetrieval)
+    ipcMain.on("write-user-data",writeUserData)
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
