@@ -7,12 +7,7 @@ import {getFirestore} from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyByLBVVKG2up3ys-A1cY_t8j44u_FSNTi0",
-  authDomain: "hackathon-project-3af77.firebaseapp.com",
-  projectId: "hackathon-project-3af77",
-  storageBucket: "hackathon-project-3af77.appspot.com",
-  messagingSenderId: "155167442326",
-  appId: "1:155167442326:web:60b2d1d61ec9c6975889b7"
+  //REDACTED FOR PRIVACY
 };
 
 // Initialize Firebase
